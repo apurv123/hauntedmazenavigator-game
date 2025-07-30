@@ -17,10 +17,26 @@ body {
     position: relative;
 }
 
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.game-info {
+    display: flex;
+    gap: 20px;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 .score-board, .lives {
     color: white;
     font-size: 20px;
-    margin: 10px 0;
 }
 
 #game-board {

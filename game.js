@@ -11,6 +11,7 @@ let pacmanPosition = { x: 1, y: 1 };
 let ghostPosition = { x: 18, y: 18 };
 let gameInterval;
 let dotsRemaining;
+let isPaused = false;
 
 // Initialize the game board
 function initializeBoard() {
@@ -152,6 +153,21 @@ function handleCollision() {
 // Handle keyboard input
 function handleKeyPress(event) {
     const key = event.key;
+    
+    // If game is paused, any key will unpause except Escape which toggles
+    if (isPaused && key !== 'Escape') {
+        togglePause();
+        return;
+    }
+    
+    if (key === 'Escape') {
+        togglePause();
+        return;
+    }
+    
+    // Don't process movement when game is paused
+    if (isPaused) return;
+    
     let newX = pacmanPosition.x;
     let newY = pacmanPosition.y;
     
@@ -178,6 +194,22 @@ function handleKeyPress(event) {
     }
 }
 
+// Toggle pause state
+function togglePause() {
+    isPaused = !isPaused;
+    const pauseBtn = document.getElementById('pause-btn');
+    pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+    
+    if (isPaused) {
+        clearInterval(gameInterval);
+        gameInterval = null; // Clear the interval ID
+    } else {
+        if (!gameInterval) { // Only create new interval if one doesn't exist
+            gameInterval = setInterval(() => moveGhost(), 500);
+        }
+    }
+}
+
 // End the game
 function endGame(won) {
     clearInterval(gameInterval);
@@ -195,8 +227,10 @@ function restartGame() {
     // Reset game state
     score = 0;
     lives = 3;
+    isPaused = false;
     document.getElementById('score').textContent = score;
     document.getElementById('lives').textContent = lives;
+    document.getElementById('pause-btn').textContent = 'Pause';
     
     // Clear the game board
     const board = document.getElementById('game-board');
